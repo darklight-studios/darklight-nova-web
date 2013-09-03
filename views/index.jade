@@ -1,5 +1,24 @@
-extends layout
+extends base
 
 block content
-  h1= title
-  p Welcome to #{title}
+	div(class="row-fluid")
+		div(class="row")
+			div(class="span12 title")= title
+			hr(class="style-one")
+		if sessions
+			each session in sessions
+				div(id="well", class="row well well-small")
+					div(class="span11 offset1 meeting")
+						span
+							i(class="icon-caret-left")
+							a(href="/details/" + session.codename)= " " + session.codename + " "
+							i(class="icon-caret-right")
+						span(class="topic-list-date") #{session.getDate()} 
+							if session.passed()
+								| (passed)
+							else if session.future()
+								| (coming up)
+							else if session.current()
+								| (active)
+		else
+			div(class="span6", id="no_meetings") No sessions to display

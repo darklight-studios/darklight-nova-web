@@ -1,0 +1,19 @@
+extends base
+
+block content
+	div(class="row-fluid")
+		span(class="title")= sessioncodename
+		hr(class="style-one")
+		span(class="meeting-description")= teamname
+		hr(class="style-one")
+		div(class="span12 title")
+			i(class="icon-group")
+			| Found Issues
+		each issue in issues
+			div(class="span12")
+				span(class="issue-list-item-name")
+					i(class="icon-plus")
+					| #{issue.name}
+				span(class="issue-list-item-description")
+					| #{issue.description}
+	div(class="row", style="min-height: 200px")

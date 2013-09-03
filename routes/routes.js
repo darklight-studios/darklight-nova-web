@@ -52,3 +52,71 @@ exports.apiUpdate = function (req, res) {
 		res.send(respData);
 	});
 };
+
+/**
+ * Index page
+ */
+exports.index = function (req, res) {
+	Session.getAll().toArray(function (err, results) {
+		var sessionList = [];
+		if (!err && results) {
+			results.forEach(function (result, index, array) {
+				if (result) sessionList.push(Session.serialize(result));
+			});
+		}
+		if (sessionList.length === 0) sessionList = false;
+		res.render('index', {title: 'Sessions', sessions: sessionList});
+	});
+};
+
+/**
+ * Session detail page
+ */
+exports.details = function (req, res) {
+	Session.getByCodename(req.params.session, function (result) {
+		if (result) {
+			var session = Session.serialize(result);
+			session.getTeams().toArray(function (err, results) {
+				var teamList = [];
+				if (!err && results) {
+					results.forEach(function (result, index, array) {
+						if (result) teamList.push(Team.serialize(result));
+					});
+				}
+				if (teamList.length === 0) teamList = false;
+				res.render('details', {session: session, teams: teamList});
+			});
+		}
+	});
+};
+
+exports.teamDetails = function (req, res) {
+	Session.getByCodename(req.params.session, function (result) {
+		if (result) {
+			var session = Session.serialize(result);
+			session.getTeamByName(req.params.team, function (_result) {
+				if (_result) {
+					var team = Team.serialize(_result);
+					team.getIssues().toArray(function (err, results) {
+						var issueList = [];
+						if (!err && results) {
+							results.forEach(function (result, index, array) {
+								if (result) issueList.push(Issue.serialize(result));
+							});
+						}
+						if (issueList.length === 0) issueList = false;
+						res.render('specificDetails',
+							{sessioncodename: session.codename, teamname: team.name, issues: issueList});
+					});
+				} else {
+					res.render('specificDetails', {});
+				}
+			});
+		}
+	});
+};
+
+
+
+
+

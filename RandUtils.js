@@ -1,4 +1,6 @@
 var crypto = require('crypto');
+var Session = require('./models/SessionModel').Session;
+var Team = require('./models/TeamModel').Team;
 
 /**
  * Turn a JS Date object into a nice, human-readable string
@@ -49,4 +51,23 @@ exports.generateKey = function (name) {
 	});
 	sha.update(stringToHash);
 	return sha.digest('hex');
+};
+
+/**
+ * Utility to easily create a Sesion
+ * @param {String} codename The session codename (must be unique)
+ * @param {String} description The description of the session
+ * @param {Date} date The date the session will take place
+ * @param {Array<String>} teams (optional) Array of team names to add to the session
+ */
+exports.createSession = function (codename, description, date, teams) {
+	if (typeof(teams) === 'undefined') {
+		Session.create(codename, description, date);
+	} else {
+		var session = new Session(codename, description, date);
+		teams.forEach(function (team, index, array) {
+			session.addTeam(team);
+		});
+		session.save();
+	}
 };

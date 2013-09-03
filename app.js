@@ -24,8 +24,14 @@ if ('development' === app.get('env')) {
 	app.use(express.errorHandler());
 }
 
+// API routes
 app.get('/api/:session_name/auth', routes.apiAuth);
 app.get('/api/update', routes.apiUpdate);
+
+// Web frontend routes
+app.get('/', routes.index);
+app.get('/details/:session', routes.details);
+app.get('/details/:session/:team', routes.teamDetails);
 
 http.createServer(app).listen(app.get('port'), function(){
 	console.log("Express server listening on port " + app.get('port'));

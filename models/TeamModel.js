@@ -11,7 +11,8 @@ var Team = Class.create({
 	initialize: function (name, session) {
 		this.name = name;
 		this.session = session;
-		this.key = generateKey(name);
+		// no idea... (see RandUtils, createSession function)
+		this.key = require('../RandUtils').generateKey(name);
 		this.score = 0;
 	},
 
@@ -58,31 +59,27 @@ var Team = Class.create({
 	 */
 	removeIssue: function (name, description) {
 		dbTools.findOne('issue', {name: name, description: description, team: this.key}, function (result) {
-			var issue = Issue.serialize(result);
-			issue.remove();
+			Issue.serialize(result).remove();
 		});
 		this.score -= 1;
 	},
 
 	/**
 	 * Get all issues this team has found
-	 * @param {Function(cursor)} callback The function to send data from the database to
+	 * @returns {DBCursor} The database cursor
 	 */
-	getIssues: function (callback) {
-		callback(dbTools.find('issue', {team: this.key}));
+	getIssues: function () {
+		return dbTools.find('issue', {team: this.key});
 	},
 
 	/**
 	 * Delete this team from the database
 	 */
 	remove: function () {
-		this.getIssues(function (cursor) {
-			cursor.each(function (err, raw) {
-				if (!err && raw) {
-					var issue = Issue.serialize(raw);
-					issue.remove();
-				}
-			});
+		this.getIssues().each(function (err, raw) {
+			if (!err && raw) {
+				Issue.serialize(raw).remove();
+			}
 		});
 		dbTools.remove('team', {key: this.key});
 	},

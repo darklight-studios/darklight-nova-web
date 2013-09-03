@@ -67,10 +67,10 @@ var Session = Class.create({
 
 	/**
 	 * Retrieve all teams who took part in this session
-	 * @param {Function(cursor)} callback The function to call after the query is over, sending the db cursor from the database
+	 * @returns {DBCursor} The db cursor from the database
 	 */
 	getTeams: function (callback) {
-		callback(dbTools.find('team', {session: this.codename}));
+		return dbTools.find('team', {session: this.codename});
 	},
 
 	/**
@@ -85,13 +85,10 @@ var Session = Class.create({
 	 * Delete this session from the database
 	 */
 	remove: function () {
-		this.getTeams(function (cursor) {
-			cursor.each(function (err, raw) {
-				if (!err && raw) {
-					var team = Team.serialize(raw);
-					team.remove();
-				}
-			});
+		this.getTeams().each(function (err, raw) {
+			if (!err && raw) {
+				Team.serialize(raw).remove();
+			}
 		});
 		dbTools.remove('session', {codename: this.codename});
 	},

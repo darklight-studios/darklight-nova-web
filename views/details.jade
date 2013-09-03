@@ -1,0 +1,17 @@
+extends base
+
+block content
+	div(class="row-fluid")
+		div(class="span12")
+			span(class="title")= session.codename
+			hr(class="style-one")
+			span(class="meeting-description")= session.description
+			hr(class="style-one")
+			div(class="span12 title")
+				i(class="icon-group")
+				| Participants
+			each team in teams
+				div(class="span3 participant-list-item")
+					a(href="/details/" + session.codename + "/" + team.name) #{team.name}
+					| : #{team.score}
+	div(class="row", style="min-height: 200px")
