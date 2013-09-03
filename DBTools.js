@@ -1,7 +1,7 @@
 // Set this to true for debug output on all DB calls
 var debug = false;
 
-var db = require('mongoskin').db('mongodb://pub:10Mo%25jxK0h7V@paulo.mongohq.com:10004/darklight-nova-web', {safe:true});
+var db = require('mongoskin').db('mongodb://pub:!PvE9d1q9F13b5@paulo.mongohq.com:10004/darklight-nova-web', {safe:true});
 
 /**
  * Execute a find call on db.collection()
