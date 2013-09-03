@@ -71,3 +71,13 @@ exports.createSession = function (codename, description, date, teams) {
 		session.save();
 	}
 };
+
+/**
+ * Utility to easily remove a Session
+ * @param {String} codename The codename of the session to remove
+ */
+exports.removeSession = function (codename) {
+	Session.getByCodename(codename, function (result) {
+		if (result) Session.serialize(result).remove();
+	});
+};
