@@ -47,6 +47,7 @@ exports.apiUpdate = function (req, res) {
 			}
 			if (req.query.hasOwnProperty('issues')) {
 				team.setIssues(JSON.parse(req.query.issues));
+				team.save();
 				respData.status = 201;
 			}
 		} else {
