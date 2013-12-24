@@ -11,20 +11,25 @@ exports.apiAuth = function (req, res) {
 	var respData = {};
 	Session.getByCodename(req.params.session_name, function (result) {
 		if (result) {
-			Session.serialize(result).getTeamByName(req.query.name, function (result) {
-				if (result) {
-					var team = Team.serialize(result);
-					respData.key = team.key;
-					respData.status = 200;
-				} else {
-					var newTeam = new Team(req.query.name, req.params.session_name);
-					newTeam.save();
-					respData.key = newTeam.key;
-					respData.status = 201;
-				}
+			if (req.query.hasOwnProperty('name')) {
+				Session.serialize(result).getTeamByName(req.query.name, function (result) {
+					if (result) {
+						respData.status = 409;
+					} else {
+						var newTeam = new Team(req.query.name, req.params.session_name);
+						newTeam.save();
+						respData.key = newTeam.key;
+						respData.status = 201;
+					}
+					res.status(respData.status);
+					res.send(respData);
+				});
+			} else {
+				respData.status = 400;
+				respData.description = 'Name not received with query';
 				res.status(respData.status);
 				res.send(respData);
-			});
+			}
 		}
 	});
 };
