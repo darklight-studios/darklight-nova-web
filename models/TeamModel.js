@@ -23,23 +23,25 @@ var Team = Class.create({
 	 * @param {Object} key: issue name value: issue description, this is the object returned from parsing the JSON sent to the update endpoint
 	 */
 	setIssues: function (issues) {
-		this.getIssues(function (dbIssues) {
-			dbIssues.each(function (err, dbIssue) {
-				if (!err && dbIssue) {
-					if (!issues.hasOwnProperty(dbIssue.name)) {
-						var oIssue = Issue.serialize(dbIssue);
-						oIssue.remove();
-					} else {
-						delete(issues[dbIssue.name]);
-					}
+		var team = this;
+		var callback = function (err, dbIssue) {
+			if (!err && dbIssue) {
+				if (!issues.hasOwnProperty(dbIssue.name)) {
+					team.removeIssue(dbIssue.name, dbIssue.description);
+				} else {
+					delete(issues[dbIssue.name]);
 				}
-			});
-		});
-		this.score = 0;
-		for (var issue in issues) {
-			Issue.create(issue, issues[issue], this.key);
-			this.score += 1;
+				callback.called = true;
+			}
+		};
+		var callfront = function (callback, team, issues) {
+			for (var issue in issues) {
+				team.addIssue(issue, issues[issue]);
+			}
 		}
+		callback.called = false;
+		team.getIssues().each(callback);
+		setTimeout(function () { callfront(callback, team, issues); }, 1000);
 	},
 
 	/**
