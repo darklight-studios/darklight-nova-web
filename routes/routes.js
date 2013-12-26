@@ -55,6 +55,7 @@ exports.apiUpdate = function (req, res) {
 				team.save();
 				respData.status = 201;
 			}
+			respData.name = team.name;
 		} else {
 			respData.status = 404;
 		}
