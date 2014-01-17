@@ -1,5 +1,10 @@
 extends base
 
+block navbar
+	a(class="brand", href="/details/#{sessioncodename}")
+		i(class="icon-arrow-left", style="font-size: 24px; margin-right: 10px; color: #0088CC")
+		div(style="display: inline; font-weight: 400")="Darklight Nova"
+
 block content
 	div(class="row-fluid")
 		span(class="title")= sessioncodename
